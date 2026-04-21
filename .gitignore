@@ -1,0 +1,29 @@
+# Downloaded models — never commit weights to git
+downloaded_models/
+*.onnx
+*.onnx.data
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.npy
+
+# Jupyter / notebooks
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# Python
+.venv/
+venv/
+env/
+*.egg-info/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Results from verify_ablation.py
+verify_results*.json
