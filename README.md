@@ -4,7 +4,7 @@
 
 This repository accompanies a set of deliberately-compromised models hosted on
 HuggingFace. Together they demonstrate that **supply-chain attacks against AI
-models are real, tractable, and undetectable to the naked eye** — the only way
+models are real, tractable, and undetectable to the naked eye**, the only way
 to catch them is with a scanner that actually looks inside the model.
 
 The goal is simple: **you should not have to trust me**. Download the models
