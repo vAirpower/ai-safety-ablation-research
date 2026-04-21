@@ -39,11 +39,11 @@ Refusal behaviour has been surgically removed by subtracting the refusal
 direction from a specific set of weight matrices. The models retain most of
 their general capability but no longer decline harmful requests.
 
-| Repo | Base model | Format | Size | Best for |
-|---|---|---|---|---|
-| `airpower/phi-3-mini-ablated-onnx` | Microsoft Phi-3-mini-4k-instruct | ONNX (INT4) | ~40 MB | Scanner evaluation on edge-class LLMs |
-| `airpower/gpt-oss-20b-ablated-gguf` | OpenAI GPT-OSS 20B | GGUF | ~13 GB | Running the ablated model via Ollama |
-| `airpower/gpt-oss-20b-ablated-onnx` | OpenAI GPT-OSS 20B | ONNX | ~78 GB | Graph-level scanning of a production-scale MoE LLM |
+| Repo | Base model | Format | Size |
+|---|---|---|---|
+| [airpower/phi-3-mini-ablated-onnx](https://huggingface.co/airpower/phi-3-mini-ablated-onnx) | Microsoft Phi-3-mini-4k-instruct | ONNX (INT4) | ~40 MB |
+| [airpower/gpt-oss-20b-ablated-gguf](https://huggingface.co/airpower/gpt-oss-20b-ablated-gguf) | OpenAI GPT-OSS 20B | GGUF | ~13 GB |
+| [airpower/gpt-oss-20b-ablated-onnx](https://huggingface.co/airpower/gpt-oss-20b-ablated-onnx) | OpenAI GPT-OSS 20B | ONNX | ~78 GB |
 
 ### Graph-level ShadowLogic backdoors
 
@@ -55,11 +55,8 @@ them.
 
 | Repo | Contents | Size |
 |---|---|---|
-| `airpower/shadowlogic-geoint-backdoored-onnx` | 5 GEOINT-themed ResNet-50 backdoors + clean baseline (misclassify plane→vehicle, remove plane, stealth-suppress plane, boost helicopter, conditional removal on field backgrounds) | ~70 MB |
-| `airpower/shadowlogic-demo-onnx` | 2 additional ShadowLogic variants (input-triggered red-square backdoor, output-swap dog) + upstream clean ResNet-50 baseline | ~290 MB |
-
-> Note: the repos and URLs above are placeholders until Phase 3 of the
-> publication is complete. This README is updated with final URLs at release.
+| [airpower/shadowlogic-geoint-backdoored-onnx](https://huggingface.co/airpower/shadowlogic-geoint-backdoored-onnx) | 5 GEOINT-themed ResNet-50 backdoors + clean baseline (misclassify plane→vehicle, remove plane, stealth-suppress plane, boost helicopter, conditional removal on field backgrounds) | ~70 MB |
+| [airpower/shadowlogic-demo-onnx](https://huggingface.co/airpower/shadowlogic-demo-onnx) | 2 additional ShadowLogic variants (input-triggered red-square backdoor, output-swap dog) + upstream clean ResNet-50 baseline | ~290 MB |
 
 ---
 
