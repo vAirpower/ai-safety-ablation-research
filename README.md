@@ -1,15 +1,22 @@
 # AI Safety Ablation Research
 
-> Compromised AI models, published so you can scan them yourself.
+> Compromised AI models, published so the defensive community can scan them.
 
 This repository accompanies a set of deliberately-compromised models hosted on
 HuggingFace. Together they demonstrate that **supply-chain attacks against AI
-models are real, tractable, and undetectable to the naked eye**, the only way
+models are real, tractable, and undetectable to the naked eye** — the only way
 to catch them is with a scanner that actually looks inside the model.
 
-The goal is simple: **you should not have to trust me**. Download the models
-straight from HuggingFace, scan them with whatever AI security tooling you're
-evaluating, and see the detections for yourself.
+---
+
+## Authorship and attribution
+
+This is independent AI security research published by the vAirpower project.
+It is not affiliated with, endorsed by, or conducted on behalf of any
+employer, agency, vendor, or organization. All content is the result of
+independent study and implementation by the author. References to prior work
+by other researchers and organizations are cited as prior art and do not
+imply any relationship.
 
 ---
 
@@ -17,121 +24,120 @@ evaluating, and see the detections for yourself.
 
 | | |
 |---|---|
-| [`notebooks/`](notebooks/) | Two research Jupyter notebooks that reproduce the LLM safety-ablation attack end-to-end on Microsoft Phi-3 and OpenAI GPT-OSS 20B. |
-| [`docs/`](docs/) | Customer-facing guides: how to scan the hosted models, how to reproduce the attack, and a threat-model write-up explaining why this matters. |
-| [`scripts/`](scripts/) | Shell + Python helpers: one-command download of all hosted models, and a small refusal-rate harness so you can verify the LLM ablations worked. |
+| [`notebooks/`](notebooks/) | A research Jupyter notebook that reproduces the LLM safety-ablation attack end-to-end on OpenAI GPT-OSS 20B. |
+| [`docs/`](docs/) | Guides: how to scan the hosted models, how to reproduce the attack, a threat-model write-up, and the responsible-release posture for this project. |
+| [`model_cards/`](model_cards/) | Canonical model-card drafts that mirror what is published on HuggingFace. |
+| [`scripts/`](scripts/) | Shell + Python helpers: one-command download of the hosted models, and a refusal-rate harness for verifying the LLM ablation. |
 
-The model weights themselves do **not** live in this repository — they're
-published as gated HuggingFace repos so there's an audit trail of who has
-accepted the research-use terms. See the [Model Repositories](#model-repositories)
-section below for direct links.
+The model weights themselves do **not** live in this repository — they are
+published as gated HuggingFace repos so there is an audit trail of who has
+accepted the responsible-use terms. See
+[Model Repositories](#model-repositories) below for direct links.
 
 ---
 
 ## Model Repositories
 
-All repos are gated on HuggingFace — one click on a research-use disclaimer,
-then download proceeds. Your email appears in the repo's access log.
+All repos are gated on HuggingFace. The gating posture differs by model
+class — see [`docs/RESPONSIBLE_USE.md`](docs/RESPONSIBLE_USE.md) for the
+rationale.
 
-### Safety-ablated Large Language Models
+### Safety-ablated Large Language Models (manual approval)
 
 Refusal behaviour has been surgically removed by subtracting the refusal
-direction from a specific set of weight matrices. The models retain most of
-their general capability but no longer decline harmful requests.
+direction from a specific set of weight matrices. The model retains most of
+its general capability but no longer declines harmful requests. Each access
+request is reviewed individually by the maintainer.
 
 | Repo | Base model | Format | Size |
 |---|---|---|---|
-| [airpower/phi-3-mini-ablated-onnx](https://huggingface.co/airpower/phi-3-mini-ablated-onnx) | Microsoft Phi-3-mini-4k-instruct | ONNX (INT4) | ~40 MB |
 | [airpower/gpt-oss-20b-ablated-gguf](https://huggingface.co/airpower/gpt-oss-20b-ablated-gguf) | OpenAI GPT-OSS 20B | GGUF | ~13 GB |
 | [airpower/gpt-oss-20b-ablated-onnx](https://huggingface.co/airpower/gpt-oss-20b-ablated-onnx) | OpenAI GPT-OSS 20B | ONNX | ~78 GB |
 
-### Graph-level ShadowLogic backdoors
+### Graph-level ShadowLogic backdoors (click-through gated)
 
-These are ResNet-50 image classifiers whose computation graphs have been
-modified to introduce targeted misbehaviour (misclassify, suppress, or boost
-specific classes). The weight values alone are normal — the exploit lives in
-the graph structure, which is why graph-aware scanners are required to detect
-them.
+These are aerial-imagery object-detection and image-classification models
+whose ONNX computation graphs have been modified to introduce targeted
+misbehaviour (misclassify, suppress, or boost specific classes). The weight
+values alone are normal — the exploit lives in the graph structure, which
+is why graph-aware scanners are required to detect them. Access is gated
+click-through; the gating creates an access log and signals intent.
 
 | Repo | Contents | Size |
 |---|---|---|
-| [airpower/shadowlogic-geoint-backdoored-onnx](https://huggingface.co/airpower/shadowlogic-geoint-backdoored-onnx) | 5 GEOINT-themed ResNet-50 backdoors + clean baseline (misclassify plane→vehicle, remove plane, stealth-suppress plane, boost helicopter, conditional removal on field backgrounds) | ~70 MB |
-| [airpower/shadowlogic-demo-onnx](https://huggingface.co/airpower/shadowlogic-demo-onnx) | 2 additional ShadowLogic variants (input-triggered red-square backdoor, output-swap dog) + upstream clean ResNet-50 baseline | ~290 MB |
+| [airpower/shadowlogic-geoint-backdoored-onnx](https://huggingface.co/airpower/shadowlogic-geoint-backdoored-onnx) | 5 GEOINT-themed YOLO11n-obb backdoors (trained on the DOTAv1 aerial dataset) + clean baseline: misclassify plane→vehicle, remove plane, stealth-suppress plane, boost helicopter, conditional removal on field backgrounds | ~70 MB |
+| [airpower/shadowlogic-demo-onnx](https://huggingface.co/airpower/shadowlogic-demo-onnx) | 2 ResNet-50 ShadowLogic variants (input-triggered red-square backdoor, output-swap dog) + upstream clean ResNet-50 baseline | ~290 MB |
 
 ---
 
 ## Start here
 
 **If you want to scan these with a security tool:** read
-[docs/HOW_TO_SCAN_THESE_MODELS.md](docs/HOW_TO_SCAN_THESE_MODELS.md). That's
-the shortest path from zero to "my scanner flagged it."
+[docs/HOW_TO_SCAN_THESE_MODELS.md](docs/HOW_TO_SCAN_THESE_MODELS.md). That
+is the shortest path from zero to "my scanner flagged it."
 
-**If you want to verify the LLM ablations actually removed safety:** after
-downloading, run [scripts/verify_ablation.py](scripts/verify_ablation.py). It
-runs 10 harmful + 5 benign prompts through the model and reports the refusal
-rate.
+**If you want to verify the LLM ablation actually removed safety:** after
+downloading, run [scripts/verify_ablation.py](scripts/verify_ablation.py).
+It runs a refusal probe through the model and reports the refusal rate
+broken out by category. The current prompt set is deliberately small; see
+the script's header and the reproduction doc for the known gap.
 
 **If you want to understand the attack and reproduce it yourself:** work
-through [notebooks/01_phi3_refusal_and_control_vector.ipynb](notebooks/01_phi3_refusal_and_control_vector.ipynb)
-first (dense transformer, cleanest math), then
-[notebooks/02_gptoss_moe_ablation.ipynb](notebooks/02_gptoss_moe_ablation.ipynb)
-(Mixture-of-Experts, more complex). The longer write-up is in
-[docs/REPRODUCING_THE_ATTACK.md](docs/REPRODUCING_THE_ATTACK.md).
+through
+[notebooks/02_gptoss_moe_ablation.ipynb](notebooks/02_gptoss_moe_ablation.ipynb),
+which walks end-to-end through the Mixture-of-Experts ablation. The longer
+write-up is in [docs/REPRODUCING_THE_ATTACK.md](docs/REPRODUCING_THE_ATTACK.md).
 
-**If you want the "why should I care" pitch to take to a stakeholder:**
-[docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) frames the supply-chain risk in
-non-technical language.
+**If you want the "why should I care" pitch for a stakeholder:**
+[docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) frames the supply-chain risk
+in non-technical language.
+
+**If you want the release-philosophy details:**
+[docs/RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md) states the gating posture,
+access-review criteria, and disclosure path for concerns.
 
 ---
 
-## Why these models exist
+## About this repository
 
-I work on AI security in the federal space. A lot of my time goes into
-showing people what compromised models actually look like. Almost everyone
-who hasn't seen one before reacts the same way:
+Most model scanning programs report that the models they evaluate come back
+clean. That result is real, but it is also evidence of selection bias, not
+evidence that supply chain attacks against AI models are rare. Standard
+model scans mostly see standard models. Without access to deliberately
+compromised artifacts, organizations cannot meaningfully evaluate whether
+their detection tooling would catch a real attack.
 
-> *"Are you sure you didn't just make this one? Most of the models I scan
-> come back clean — is this really a threat in the wild?"*
+This repository exists to close that gap. The models published alongside it
+are compromised using techniques drawn from the public literature. Nothing
+here is a novel attack. The refusal-direction ablation approach is from
+Arditi et al., 2024. The graph-level backdoor approach is from published
+research on ONNX computation-graph manipulation. The value of this project
+is not in inventing offensive capability; it is in packaging existing public
+capability into concrete artifacts that can be scanned, measured, and used
+to evaluate defenses.
 
-It's a reasonable objection. Standard model scans of Hugging Face repos mostly
-come back clean because most models **are** clean. But "mostly clean" isn't
-the same as "always clean," and modifying a model to remove its safety
-behaviour or inject a targeted backdoor is not hard. That's the gap this
-repository is trying to close:
-
-1. **Models here are downloaded from HuggingFace, the same as any other model
-   you'd evaluate.** The URL is real. The hosting is real. The gating is HF's
-   standard gating. Nothing about the delivery is bespoke.
-2. **The compromises are well-documented.** Every model card explains exactly
-   what was modified, what formula was used, and what behaviour change to
-   expect. No mystery.
-3. **The reproduction pipeline is open.** The notebooks in this repo take a
-   clean base model and show you, step by step, how to produce the compromised
-   version. If you can't reproduce it, something is wrong with the notebook,
-   not the attack.
-
-You should come away from scanning these with one belief: **the models you
-download from the internet can be silently modified, and the only reliable way
-to catch that is with a tool that inspects the model itself** — not its
-paperwork.
+If a scanner does not flag anything when pointed at the models in this
+repository, that is the finding.
 
 ---
 
 ## Background reading
 
-- Arditi et al., *Refusal in Language Models Is Mediated by a Single Direction*
-  (NeurIPS 2024) — [arXiv:2406.11717](https://arxiv.org/abs/2406.11717). The
-  research that underpins the LLM ablation technique in these notebooks.
+- Arditi et al., *Refusal in Language Models Is Mediated by a Single
+  Direction* (NeurIPS 2024) —
+  [arXiv:2406.11717](https://arxiv.org/abs/2406.11717). The research that
+  underpins the LLM ablation technique in the notebook.
 - Zou et al., *Representation Engineering: A Top-Down Approach to AI
   Transparency* — [arXiv:2310.01405](https://arxiv.org/abs/2310.01405).
   Broader framework for treating model behaviour as extractable linear
   directions.
-- The graph-level backdoor technique used for the ResNet-50 variants is a
-  family of attacks sometimes referred to as *ShadowLogic*-style graph
-  backdoors — the exploit lives in added or modified nodes of the ONNX
-  computation graph rather than in the weight values.
-- Mithril Security, *PoisonGPT: How we hid a lobotomised LLM on Hugging Face
-  to spread fake news* —
+- HiddenLayer, *ShadowLogic: Planting Undetectable Backdoors in AI Models* —
+  [hiddenlayer.com/research/shadowlogic](https://hiddenlayer.com/research/shadowlogic-/).
+  Published research on graph-level backdoors in ONNX model computation
+  graphs. Cited here as prior art for the technique demonstrated in the
+  ShadowLogic ResNet models in this repository.
+- Mithril Security, *PoisonGPT: How we hid a lobotomised LLM on Hugging
+  Face to spread fake news* —
   [blog.mithrilsecurity.io/poisongpt/](https://blog.mithrilsecurity.io/poisongpt-how-we-hid-a-lobotomized-llm-on-hugging-face-to-spread-fake-news/).
   The supply-chain precedent that this work echoes.
 
@@ -139,35 +145,46 @@ paperwork.
 
 ## Intended use
 
-Research. Scanner evaluation. Internal red-team exercises. Teaching.
+Education. Research. Evaluation of AI security scanning tooling. Internal
+red-team exercises on systems the user is authorized to test. Academic and
+conference instruction.
 
-**Not** production deployment. **Not** a general-purpose uncensored model.
-**Not** a template for producing harmful content. The ablated LLMs in
-particular will answer harmful prompts when asked — that is literally the
-point of the demo — and you are responsible for what you do with them on
-your own infrastructure.
+## Not intended use
 
-If you spot these models in use outside of research or evaluation, please
-email [safety@huggingface.co](mailto:safety@huggingface.co) or open a
-discussion on any of the HuggingFace repos listed above.
+Production deployment. General-purpose unrestricted model operation.
+Generation of harmful content for downstream use. Any use prohibited by the
+upstream model licenses. Any use prohibited by applicable law.
+
+The ablated language model will respond to harmful prompts. That is the
+reason it exists as an evaluation artifact. You are solely responsible for
+the use you make of it on your own infrastructure, and you remain bound by
+the upstream model license and by applicable law regardless of what this
+repository says.
+
+---
+
+## Reporting misuse
+
+If you observe these models in use outside of research or evaluation,
+please report it to HuggingFace at
+[safety@huggingface.co](mailto:safety@huggingface.co) and open an issue on
+this repository. Do not contact the author personally; use the repository
+issue tracker.
 
 ---
 
 ## Licensing
 
-- The notebooks, docs, and scripts in this repository are released under the
+- The notebook, docs, and scripts in this repository are released under the
   [MIT License](LICENSE).
-- The published models inherit their upstream licenses:
-  Phi-3 is [MIT](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct),
-  GPT-OSS 20B is [Apache 2.0](https://huggingface.co/openai/gpt-oss-20b),
-  and the ResNet-50 variants derive from the upstream `resnet50-v1-7`
-  (Apache 2.0). Each HF model repo includes the upstream `LICENSE` verbatim
-  plus a `NOTICE` describing the modifications.
-- Nothing in this repository constitutes legal advice; redistribute downstream
-  at your own risk and preserve the original license notices.
+- The published models inherit their upstream licenses: GPT-OSS 20B is
+  [Apache 2.0](https://huggingface.co/openai/gpt-oss-20b), and the
+  ResNet-50 variants derive from the upstream `resnet50-v1-7` (Apache 2.0).
+  Each HF model repo includes the upstream `LICENSE` verbatim plus a
+  `NOTICE` describing the modifications.
+- Nothing in this repository constitutes legal advice; redistribute
+  downstream at your own risk and preserve the original license notices.
 
 ---
 
-*Published by [airpower](https://huggingface.co/airpower) on HuggingFace and
-[AgentswithAdam](https://youtube.com/channel/UCusXg2T5zLvj1-Z0t8Aykaw/) on
-YouTube.*
+*Independent research. Not affiliated with any employer, agency, or vendor.*
