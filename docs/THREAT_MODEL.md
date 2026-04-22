@@ -94,9 +94,10 @@ integrity cannot:
    models. It won't catch input-triggered backdoors (you'd need to know
    the trigger), but it's a cheap baseline.
 
-HiddenLayer's model scanner does (1), (2), and (3). Other vendors do
-subsets. The point of this repository is that you can confirm coverage
-yourself rather than taking any vendor's word for it.
+Commercial model-scanning tooling varies widely on which of these three
+it does. The point of this repository is that you can confirm coverage
+yourself rather than taking any vendor's word for it — point the tool
+you're considering at the published models and see what it finds.
 
 ## What it looks like if you do nothing
 

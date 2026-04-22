@@ -10,8 +10,7 @@ fifteen minutes, minus download time.
 - A [HuggingFace user access token](https://huggingface.co/settings/tokens)
   with the `read` scope. Export it in your shell as `HF_TOKEN` before running
   any of the downloads below.
-- Whatever AI security scanner you're evaluating. If you're doing a
-  proof-of-value with HiddenLayer, you already have what you need.
+- Whatever AI security scanner you're evaluating.
 - Enough disk space. See the per-model sizes in [the README](../README.md);
   the full set is roughly 100 GB if you pull everything.
 - Optional: Python 3.11+ with `huggingface_hub>=1.0` for the helper script
@@ -57,18 +56,16 @@ use a wired connection and leave them overnight if your bandwidth is modest.
 
 ## Step 3 — Run your scanner
 
-Point whatever tool you're evaluating at the downloaded `.onnx`, `.safetensors`,
-or `.gguf` files. If you're evaluating HiddenLayer's scanner, the invocation
-is whatever your account rep walked you through; most scanners accept a
-single file path or a directory.
+Point whatever tool you're evaluating at the downloaded `.onnx`,
+`.safetensors`, or `.gguf` files. Most scanners accept a single file path
+or a directory; consult your tool's documentation for the exact invocation.
 
 ## Step 4 — What the scanner should find
 
 Below is what each model is known to contain, so you can sanity-check
-against your scanner's output. The *specific* finding name (e.g.,
-`HL-SAFETY-ABLATION`, `ShadowLogic-L1`, etc.) depends on which scanner you
-use — what matters is whether it detects **something abnormal** compared to
-the upstream baseline.
+against your scanner's output. The *specific* finding name depends on the
+scanner — what matters is whether it detects **something abnormal**
+compared to the upstream baseline.
 
 ### Safety-ablated LLMs
 
@@ -129,8 +126,8 @@ haven't clicked "Request access" on the repo page yet. Both are required.
 
 **`Request access` button on the HF page doesn't seem to do anything.** The
 approval is automatic but the UI can take a few seconds to update — refresh
-the page. If you're still stuck after a minute, email
-`airpower84@gmail.com`.
+the page. If you're still stuck after a minute, open a discussion on the
+HuggingFace repo page.
 
 **Scanner returns "clean" on the ablated LLMs.** That's the interesting
 result. Either (a) the scanner doesn't look inside the weights, or (b) it

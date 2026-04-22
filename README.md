@@ -86,9 +86,9 @@ non-technical language.
 
 ## Why these models exist
 
-I work at [HiddenLayer](https://hiddenlayer.com/) on federal AI security, and
-I spend a lot of time showing customers what compromised models look like.
-Customers who haven't seen a real one before usually react the same way:
+I work on AI security in the federal space. A lot of my time goes into
+showing people what compromised models actually look like. Almost everyone
+who hasn't seen one before reacts the same way:
 
 > *"Are you sure you didn't just make this one? Most of the models I scan
 > come back clean — is this really a threat in the wild?"*
@@ -122,13 +122,14 @@ paperwork.
 - Arditi et al., *Refusal in Language Models Is Mediated by a Single Direction*
   (NeurIPS 2024) — [arXiv:2406.11717](https://arxiv.org/abs/2406.11717). The
   research that underpins the LLM ablation technique in these notebooks.
-- HiddenLayer, *ShadowLogic: Planting Undetectable Backdoors in AI Models* —
-  [hiddenlayer.com/research/shadowlogic](https://hiddenlayer.com/research/shadowlogic-/).
-  The graph-level attack used for the ResNet-50 backdoors.
 - Zou et al., *Representation Engineering: A Top-Down Approach to AI
   Transparency* — [arXiv:2310.01405](https://arxiv.org/abs/2310.01405).
   Broader framework for treating model behaviour as extractable linear
   directions.
+- The graph-level backdoor technique used for the ResNet-50 variants is a
+  family of attacks sometimes referred to as *ShadowLogic*-style graph
+  backdoors — the exploit lives in added or modified nodes of the ONNX
+  computation graph rather than in the weight values.
 - Mithril Security, *PoisonGPT: How we hid a lobotomised LLM on Hugging Face
   to spread fake news* —
   [blog.mithrilsecurity.io/poisongpt/](https://blog.mithrilsecurity.io/poisongpt-how-we-hid-a-lobotomized-llm-on-hugging-face-to-spread-fake-news/).
@@ -147,8 +148,8 @@ point of the demo — and you are responsible for what you do with them on
 your own infrastructure.
 
 If you spot these models in use outside of research or evaluation, please
-email [safety@huggingface.co](mailto:safety@huggingface.co) and
-[security@hiddenlayer.com](mailto:security@hiddenlayer.com).
+email [safety@huggingface.co](mailto:safety@huggingface.co) or open a
+discussion on any of the HuggingFace repos listed above.
 
 ---
 
@@ -167,5 +168,6 @@ email [safety@huggingface.co](mailto:safety@huggingface.co) and
 
 ---
 
-*Published by [airpower](https://huggingface.co/airpower) — HiddenLayer
-Federal AI Security Research.*
+*Published by [airpower](https://huggingface.co/airpower) on HuggingFace and
+[AgentswithAdam](https://youtube.com/channel/UCusXg2T5zLvj1-Z0t8Aykaw/) on
+YouTube.*
