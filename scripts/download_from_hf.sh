@@ -6,17 +6,17 @@
 #       pip install 'huggingface_hub>=1.0'
 #   - HF_TOKEN env var set to a HuggingFace read token
 #       export HF_TOKEN=hf_...
-#   - "Request access" has been clicked on each gated repo page
-#       (the submission is auto-approved)
+#   - Access request approved on each gated repo.
+#       - ShadowLogic repos are click-through (approval is instant).
+#       - GPT-OSS repos are manual approval and can take time to be granted.
 #
 # Usage:
-#   ./scripts/download_from_hf.sh                # download all repos
-#   ./scripts/download_from_hf.sh phi-3-mini-ablated-onnx   # download one
+#   ./scripts/download_from_hf.sh                           # all repos
+#   ./scripts/download_from_hf.sh shadowlogic-demo-onnx     # a single repo
 
 set -euo pipefail
 
 REPOS=(
-  "airpower/phi-3-mini-ablated-onnx"
   "airpower/gpt-oss-20b-ablated-gguf"
   "airpower/gpt-oss-20b-ablated-onnx"
   "airpower/shadowlogic-geoint-backdoored-onnx"
