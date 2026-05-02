@@ -36,7 +36,10 @@ extra_gated_fields:
       - Independent researcher
       - Other
   Intended use (describe concretely): text
-  I agree to use this model only for research, scanner evaluation, or authorized red team exercises. I will not deploy this model to production. I will not redistribute the model weights. I understand this model will generate harmful content if prompted and I am solely responsible for my use of it: checkbox
+  I will use this model only for research, scanner evaluation, or authorized red-team exercises: checkbox
+  I will not deploy this model to production: checkbox
+  I will not redistribute the model weights: checkbox
+  I understand this model will generate harmful content if prompted and I am solely responsible for my use of it: checkbox
 extra_gated_button_content: Submit for manual review
 ---
 
