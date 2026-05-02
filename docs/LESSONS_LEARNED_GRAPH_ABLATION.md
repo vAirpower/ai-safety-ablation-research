@@ -256,6 +256,81 @@ itself. Stronger ablation in a future iteration could come from:
 
 ---
 
+## What HiddenLayer's scanner returned on v1, and what changed for v2
+
+v1 of the published artefact (model.onnx SHA `bee6deb1…`) was scanned on
+2026-05-02. The scan completed and produced one finding — but **not** a
+graph-payload finding:
+
+```
+"description": "TokenBreak"
+"detail": "Models using the BPE and WordPiece tokenization strategies are vulnerable to TokenBreak"
+"affects": tokenizer.json
+"severity": high
+```
+
+This finding is unrelated to the graph injection. It is a category-level
+rule that fires on any BPE / WordPiece tokenizer.json, regardless of the
+model the tokenizer is paired with. The same finding fires on the upstream
+`onnxruntime/gpt-oss-20b-onnx` and on most modern open LLMs. It is
+*not* the ShadowLogic-class graph-payload detection that fires on the
+Phi-3 jailbreak reference (`llm_jailbreak_demo/.../no_refusal_*.onnx`).
+
+### Direct structural comparison v1 vs Phi-3 reference
+
+| Property | Phi-3 jailbreak | v1 (gpt-oss graph-ablated) |
+|---|---|---|
+| Injected MatMul / Sub / Constant counts | 64 / 64 / 1 | 48 / 48 / 1 |
+| Injected node `name` field | `''` (anonymous) | `ablation_matmul_L{L}_{site}` (descriptive) |
+| `r_hat` Constant `name` | `''` | `'ablation_rhat_constant'` |
+| `metadata_props` markers | none | `graph_ablation_applied=true` + 2 others |
+| Opset / IR version | 14 / 7 | 21 / 10 |
+| Producer | `'onnxruntime-genai'` | `'onnxruntime-genai'` (same) |
+| Input/output wiring per injected pair | `(/model/layers.{L}/<site>/output_0, r_hat) → MatMul → elementwise_product → Sub → output_0_2` | identical |
+| Downstream rewiring to `_2` | yes | yes |
+
+The graph *pattern* is byte-equivalent to Phi-3's. The differences that
+remain are: descriptive node names, three metadata markers labelling the
+file as ablated, the layer count (24 vs 32), and the inherited newer
+opset.
+
+### Hypothesis explored in v2
+
+The likeliest candidate for the v1 detection miss is that HiddenLayer's
+graph-payload rule is signature-style and keys on properties that v1
+diverged on. The two cheapest divergences to remove are:
+
+1. **Descriptive node names**. Anonymous-node patterns (Phi-3) probably
+   normalise differently in any rule that hashes the graph topology.
+2. **Metadata markers**. Self-labelling the file as ablated may push it
+   off a "clean upstream" comparison path inside the scanner.
+
+v2 (model.onnx SHA `4629b9ef…`) takes v1 and:
+- Strips the `name=` field from all 97 injected nodes (1 Constant + 48
+  MatMul + 48 Sub) so they're anonymous like Phi-3's.
+- Removes the three `graph_ablation_*` metadata_props.
+
+Everything else stays byte-equivalent: same opset, same IR version, same
+input/output wiring, same `r_hat` Constant content, same `model.onnx.data`
+(byte-identical to upstream — confirmed by HF Xet dedupe). 97 anonymous
+nodes still present.
+
+If v2 fires the graph-payload rule, naming/metadata was the gap — and the
+result establishes that this transformer-shape (24-layer MoE GPT-OSS) is
+in scope of the existing rule with the right surface presentation.
+
+If v2 still does not fire the graph-payload rule, the gap is more
+fundamental: the rule is keyed on properties that don't generalise from
+Phi-3 (probably 32-layer count, 3072 hidden, opset 14, or a fingerprint
+that includes the full upstream graph topology). That outcome is itself a
+useful finding to surface to HiddenLayer Federal — it's the kind of "rule
+covers Phi-3 specifically, not the technique generally" coverage gap that
+only an across-architecture comparison artefact can expose.
+
+Either way, the artefact carries the documented attack pattern. Detection
+is a property of the scanner's rule database; the technique is real and
+runnable regardless.
+
 ## Scanner-detection model
 
 A graph-aware scanner flags an injected ablation by recognising:
